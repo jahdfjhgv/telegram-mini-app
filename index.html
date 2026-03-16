@@ -14,7 +14,9 @@
       --muted: rgba(255, 255, 255, 0.7);
       --accent: #f59e0b;
       --accent2: #fbbf24;
-      --success: #22c55e;
+      --green: #22c55e;
+      --blue: #3b82f6;
+      --nav: rgba(15, 23, 42, 0.96);
     }
 
     * {
@@ -29,8 +31,7 @@
       width: 100%;
       height: 100%;
       font-family: Arial, sans-serif;
-      background:
-        radial-gradient(circle at top, #1e293b 0%, #0f172a 45%, #020617 100%);
+      background: radial-gradient(circle at top, #1e293b 0%, #0f172a 45%, #020617 100%);
       color: var(--text);
       overflow: hidden;
     }
@@ -45,18 +46,67 @@
       width: 100%;
       max-width: 430px;
       height: 100vh;
-      padding: 18px 16px 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
       position: relative;
       overflow: hidden;
-    }
-
-    .top {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+    }
+
+    .screen {
+      flex: 1;
+      display: none;
+      padding: 16px 16px 100px;
+      overflow-y: auto;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #60a5fa);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .user-info {
+      min-width: 0;
+    }
+
+    .user-name {
+      font-size: 17px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-username {
+      font-size: 13px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 3px;
     }
 
     .title {
@@ -64,21 +114,21 @@
       font-size: 28px;
       font-weight: 700;
       margin-top: 6px;
-      letter-spacing: 0.5px;
     }
 
     .subtitle {
       text-align: center;
       font-size: 14px;
       color: var(--muted);
-      margin-top: -6px;
+      margin-top: 4px;
+      margin-bottom: 16px;
     }
 
     .stats {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      margin-top: 8px;
+      margin-bottom: 18px;
     }
 
     .card {
@@ -86,7 +136,6 @@
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 18px;
       padding: 14px;
-      backdrop-filter: blur(10px);
       text-align: center;
       box-shadow: 0 10px 25px rgba(0,0,0,0.25);
     }
@@ -103,11 +152,11 @@
     }
 
     .center-area {
-      flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
       position: relative;
+      min-height: 320px;
     }
 
     .coin-wrap {
@@ -174,18 +223,13 @@
       z-index: 10;
     }
 
-    .bottom {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
     .progress-card {
       background: var(--card);
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 18px;
       padding: 14px;
-      backdrop-filter: blur(10px);
+      margin-top: 10px;
+      margin-bottom: 14px;
     }
 
     .progress-head {
@@ -212,12 +256,6 @@
       transition: width 0.2s linear;
     }
 
-    .hint {
-      text-align: center;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
     .save-btn {
       width: 100%;
       height: 52px;
@@ -229,6 +267,79 @@
       font-weight: 700;
       cursor: pointer;
       box-shadow: 0 10px 24px rgba(37, 99, 235, 0.28);
+      margin-top: 10px;
+    }
+
+    .profile-box {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      margin-bottom: 14px;
+    }
+
+    .profile-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .profile-row:last-child {
+      border-bottom: none;
+    }
+
+    .profile-label {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .profile-value {
+      font-size: 14px;
+      font-weight: 700;
+      text-align: right;
+      word-break: break-word;
+    }
+
+    .hint {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 78px;
+      background: var(--nav);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 10px 14px 18px;
+    }
+
+    .nav-btn {
+      flex: 1;
+      margin: 0 6px;
+      height: 48px;
+      border: none;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .nav-btn.active {
+      background: linear-gradient(90deg, #2563eb, #3b82f6);
+      box-shadow: 0 10px 22px rgba(37,99,235,0.25);
     }
 
     @keyframes floatUp {
@@ -250,7 +361,15 @@
 </head>
 <body>
   <div class="app">
-    <div class="top">
+    <div class="screen active" id="gameScreen">
+      <div class="user-card">
+        <div class="avatar" id="avatar">U</div>
+        <div class="user-info">
+          <div class="user-name" id="topUserName">Игрок</div>
+          <div class="user-username" id="topUsername">@unknown</div>
+        </div>
+      </div>
+
       <div class="title">Coin Tap</div>
       <div class="subtitle">Жми по монете и зарабатывай баланс</div>
 
@@ -264,16 +383,14 @@
           <div class="card-value"><span id="energy">100</span>/100</div>
         </div>
       </div>
-    </div>
 
-    <div class="center-area" id="centerArea">
-      <div class="coin-wrap">
-        <div class="coin-shadow"></div>
-        <button class="coin" id="coinBtn"></button>
+      <div class="center-area" id="centerArea">
+        <div class="coin-wrap">
+          <div class="coin-shadow"></div>
+          <button class="coin" id="coinBtn"></button>
+        </div>
       </div>
-    </div>
 
-    <div class="bottom">
       <div class="progress-card">
         <div class="progress-head">
           <span>Восстановление энергии</span>
@@ -285,7 +402,51 @@
       </div>
 
       <button class="save-btn" id="saveBtn">Сохранить результат</button>
-      <div class="hint">Нажимай быстро. Каждый тап = +1 монета</div>
+      <div class="hint">Каждый тап = +1 к балансу</div>
+    </div>
+
+    <div class="screen" id="profileScreen">
+      <div class="title">Профиль</div>
+      <div class="subtitle">Аккаунт автоматически связан с Telegram</div>
+
+      <div class="profile-box">
+        <div class="profile-row">
+          <div class="profile-label">Имя</div>
+          <div class="profile-value" id="profileName">—</div>
+        </div>
+        <div class="profile-row">
+          <div class="profile-label">Username</div>
+          <div class="profile-value" id="profileUsername">—</div>
+        </div>
+        <div class="profile-row">
+          <div class="profile-label">Telegram ID</div>
+          <div class="profile-value" id="profileId">—</div>
+        </div>
+        <div class="profile-row">
+          <div class="profile-label">Баланс</div>
+          <div class="profile-value" id="profileBalance">0</div>
+        </div>
+        <div class="profile-row">
+          <div class="profile-label">Энергия</div>
+          <div class="profile-value" id="profileEnergy">100</div>
+        </div>
+      </div>
+
+      <div class="profile-box">
+        <div class="profile-row">
+          <div class="profile-label">Статус</div>
+          <div class="profile-value">Аккаунт привязан</div>
+        </div>
+        <div class="profile-row">
+          <div class="profile-label">Источник</div>
+          <div class="profile-value">Telegram Mini App</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="nav-btn active" id="gameTab">🎮 Игра</button>
+      <button class="nav-btn" id="profileTab">👤 Профиль</button>
     </div>
   </div>
 
@@ -298,6 +459,14 @@
     let energy = Number(localStorage.getItem("coin_energy")) || 100;
     const maxEnergy = 100;
 
+    const tgUser = tg.initDataUnsafe?.user || null;
+
+    const currentUser = {
+      id: tgUser?.id || "Не определён",
+      first_name: tgUser?.first_name || "Игрок",
+      username: tgUser?.username ? "@" + tgUser.username : "@unknown"
+    };
+
     const balanceEl = document.getElementById("balance");
     const energyEl = document.getElementById("energy");
     const energyTextEl = document.getElementById("energyText");
@@ -306,11 +475,40 @@
     const centerArea = document.getElementById("centerArea");
     const saveBtn = document.getElementById("saveBtn");
 
+    const topUserName = document.getElementById("topUserName");
+    const topUsername = document.getElementById("topUsername");
+    const avatar = document.getElementById("avatar");
+
+    const profileName = document.getElementById("profileName");
+    const profileUsername = document.getElementById("profileUsername");
+    const profileId = document.getElementById("profileId");
+    const profileBalance = document.getElementById("profileBalance");
+    const profileEnergy = document.getElementById("profileEnergy");
+
+    const gameScreen = document.getElementById("gameScreen");
+    const profileScreen = document.getElementById("profileScreen");
+    const gameTab = document.getElementById("gameTab");
+    const profileTab = document.getElementById("profileTab");
+
+    function setUserInfo() {
+      topUserName.textContent = currentUser.first_name;
+      topUsername.textContent = currentUser.username;
+      avatar.textContent = currentUser.first_name.charAt(0).toUpperCase();
+
+      profileName.textContent = currentUser.first_name;
+      profileUsername.textContent = currentUser.username;
+      profileId.textContent = currentUser.id;
+    }
+
     function render() {
       balanceEl.textContent = balance;
       energyEl.textContent = energy;
       energyTextEl.textContent = `${energy}/${maxEnergy}`;
       progressFill.style.width = `${(energy / maxEnergy) * 100}%`;
+
+      profileBalance.textContent = balance;
+      profileEnergy.textContent = energy;
+
       localStorage.setItem("coin_balance", balance);
       localStorage.setItem("coin_energy", energy);
     }
@@ -327,6 +525,23 @@
         el.remove();
       }, 800);
     }
+
+    function openGame() {
+      gameScreen.classList.add("active");
+      profileScreen.classList.remove("active");
+      gameTab.classList.add("active");
+      profileTab.classList.remove("active");
+    }
+
+    function openProfile() {
+      profileScreen.classList.add("active");
+      gameScreen.classList.remove("active");
+      profileTab.classList.add("active");
+      gameTab.classList.remove("active");
+    }
+
+    gameTab.addEventListener("click", openGame);
+    profileTab.addEventListener("click", openProfile);
 
     coinBtn.addEventListener("click", (e) => {
       if (energy <= 0) return;
@@ -352,12 +567,16 @@
     saveBtn.addEventListener("click", () => {
       const data = {
         balance: balance,
-        energy: energy
+        energy: energy,
+        user_id: currentUser.id,
+        first_name: currentUser.first_name,
+        username: currentUser.username
       };
 
       tg.sendData(JSON.stringify(data));
     });
 
+    setUserInfo();
     render();
   </script>
 </body>
