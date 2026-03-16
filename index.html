@@ -7,22 +7,23 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
   />
   <title>Coin Tap</title>
-  <script src="https://telegram.org/js/telegram-web-app.js?61"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
       --bg: #070b14;
-      --bg2: #0e1628;
-      --card: rgba(255, 255, 255, 0.08);
-      --card-strong: rgba(255, 255, 255, 0.12);
-      --border: rgba(255, 255, 255, 0.08);
       --text: #ffffff;
-      --muted: rgba(255, 255, 255, 0.68);
-      --accent: #ffd34d;
-      --accent2: #ffb800;
+      --muted: rgba(255,255,255,0.68);
+      --card: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.08);
       --blue: #4f8cff;
-      --green: #3ddc84;
+      --blue2: #2f67ff;
+      --green: #39d98a;
+      --gold1: #fff2a8;
+      --gold2: #ffd34d;
+      --gold3: #ffb800;
+      --gold4: #cf7c00;
       --danger: #ff6b6b;
-      --shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+      --shadow: 0 18px 40px rgba(0,0,0,0.35);
     }
 
     * {
@@ -127,16 +128,21 @@
       margin-bottom: 14px;
     }
 
-    .hero-title {
+    .hero-title,
+    .page-title {
       font-size: 30px;
       font-weight: 900;
       letter-spacing: 0.3px;
+      text-align: center;
     }
 
-    .hero-subtitle {
+    .hero-subtitle,
+    .page-subtitle {
       margin-top: 8px;
       font-size: 14px;
       color: var(--muted);
+      text-align: center;
+      margin-bottom: 18px;
     }
 
     .stats {
@@ -186,10 +192,6 @@
       width: 230px;
       height: 230px;
       border-radius: 50%;
-      background: radial-gradient(circle,
-        rgba(255, 184, 0, 0.35) 0%,
-        rgba(255, 184, 0, 0.12) 40%,
-        rgba(255, 184, 0, 0) 72%);
       filter: blur(18px);
       animation: pulse 2.2s ease-in-out infinite;
     }
@@ -210,13 +212,8 @@
       border-radius: 50%;
       cursor: pointer;
       position: relative;
-      background:
-        radial-gradient(circle at 30% 28%, #fff2a8 0%, #ffd34d 28%, #ffb800 62%, #cf7c00 100%);
-      box-shadow:
-        inset 0 12px 24px rgba(255,255,255,0.35),
-        inset 0 -16px 22px rgba(0,0,0,0.18),
-        0 18px 36px rgba(255, 184, 0, 0.34);
       transition: transform 0.08s ease, filter 0.08s ease;
+      overflow: hidden;
     }
 
     .coin:active {
@@ -224,7 +221,16 @@
       filter: brightness(0.98);
     }
 
-    .coin::before {
+    .coin.standard {
+      background:
+        radial-gradient(circle at 30% 28%, var(--gold1) 0%, var(--gold2) 28%, var(--gold3) 62%, var(--gold4) 100%);
+      box-shadow:
+        inset 0 12px 24px rgba(255,255,255,0.35),
+        inset 0 -16px 22px rgba(0,0,0,0.18),
+        0 18px 36px rgba(255, 184, 0, 0.34);
+    }
+
+    .coin.standard::before {
       content: "C";
       position: absolute;
       inset: 0;
@@ -235,6 +241,72 @@
       font-weight: 900;
       color: rgba(117, 63, 0, 0.86);
       text-shadow: 0 2px 0 rgba(255,255,255,0.28);
+    }
+
+    .coin.cap {
+      background:
+        radial-gradient(circle at 50% 50%, #ffffff 0 18%, #e53935 18% 43%, #1565c0 43% 68%, #e53935 68% 100%);
+      box-shadow:
+        inset 0 12px 24px rgba(255,255,255,0.25),
+        inset 0 -16px 22px rgba(0,0,0,0.2),
+        0 18px 36px rgba(21, 101, 192, 0.25);
+    }
+
+    .coin.cap::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      border: 8px dashed rgba(255,255,255,0.28);
+      opacity: 0.7;
+    }
+
+    .coin.cap::after {
+      content: "C";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 74px;
+      font-weight: 900;
+      color: white;
+      text-shadow: 0 4px 16px rgba(0,0,0,0.35);
+    }
+
+    .coin.crypto {
+      background:
+        radial-gradient(circle at 35% 30%, #ffe9a6 0%, #f5c95a 26%, #c98d10 58%, #805500 100%);
+      box-shadow:
+        inset 0 12px 24px rgba(255,255,255,0.28),
+        inset 0 -16px 22px rgba(0,0,0,0.2),
+        0 18px 36px rgba(201, 141, 16, 0.28);
+    }
+
+    .coin.crypto::before {
+      content: "C";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 72px;
+      font-weight: 900;
+      color: #8a5a00;
+      text-shadow: 0 2px 0 rgba(255,255,255,0.22);
+    }
+
+    .coin.crypto::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 26%;
+      width: 10px;
+      height: 48%;
+      transform: translateX(-50%);
+      background: rgba(138, 90, 0, 0.92);
+      border-radius: 10px;
+      opacity: 0.8;
     }
 
     .tap-text {
@@ -278,16 +350,72 @@
       transition: width 0.25s ease;
     }
 
-    .actions {
+    .mini-hint {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    .shop-list {
       display: grid;
+      gap: 14px;
+    }
+
+    .shop-card {
+      padding: 16px;
+    }
+
+    .shop-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
       gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .shop-title {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .shop-price {
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffe28a;
+      white-space: nowrap;
+    }
+
+    .shop-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-bottom: 14px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+    }
+
+    .tag.active {
+      background: rgba(57, 217, 138, 0.18);
+      color: #8ff0bf;
+      border: 1px solid rgba(57, 217, 138, 0.25);
     }
 
     .btn {
       border: none;
       border-radius: 18px;
-      height: 56px;
-      font-size: 16px;
+      height: 52px;
+      width: 100%;
+      font-size: 15px;
       font-weight: 800;
       cursor: pointer;
       color: white;
@@ -298,31 +426,123 @@
       background: linear-gradient(90deg, #3478ff, #5ea0ff);
     }
 
-    .btn-secondary {
+    .btn-green {
+      background: linear-gradient(90deg, #1fbf75, #39d98a);
+    }
+
+    .btn-disabled {
       background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.5);
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .skin-preview-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .skin-card {
+      padding: 16px;
+    }
+
+    .skin-preview-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .mini-coin {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      position: relative;
+      flex-shrink: 0;
+      overflow: hidden;
       border: 1px solid rgba(255,255,255,0.08);
-      color: var(--text);
     }
 
-    .mini-hint {
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      margin-top: 12px;
+    .mini-coin.standard {
+      background:
+        radial-gradient(circle at 30% 28%, var(--gold1) 0%, var(--gold2) 28%, var(--gold3) 62%, var(--gold4) 100%);
     }
 
-    .profile-title {
+    .mini-coin.standard::before {
+      content: "C";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       font-size: 28px;
       font-weight: 900;
-      text-align: center;
-      margin: 8px 0 8px;
+      color: rgba(117,63,0,0.86);
     }
 
-    .profile-subtitle {
-      text-align: center;
+    .mini-coin.cap {
+      background:
+        radial-gradient(circle at 50% 50%, #ffffff 0 18%, #e53935 18% 43%, #1565c0 43% 68%, #e53935 68% 100%);
+    }
+
+    .mini-coin.cap::before {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      border: 4px dashed rgba(255,255,255,0.28);
+    }
+
+    .mini-coin.cap::after {
+      content: "C";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 26px;
+      font-weight: 900;
+      color: white;
+    }
+
+    .mini-coin.crypto {
+      background:
+        radial-gradient(circle at 35% 30%, #ffe9a6 0%, #f5c95a 26%, #c98d10 58%, #805500 100%);
+    }
+
+    .mini-coin.crypto::before {
+      content: "C";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 28px;
+      font-weight: 900;
+      color: #8a5a00;
+    }
+
+    .mini-coin.crypto::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 18%;
+      width: 4px;
+      height: 64%;
+      transform: translateX(-50%);
+      background: rgba(138, 90, 0, 0.92);
+      border-radius: 10px;
+    }
+
+    .skin-name {
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .skin-sub {
+      font-size: 13px;
       color: var(--muted);
-      font-size: 14px;
-      margin-bottom: 18px;
+      margin-top: 4px;
     }
 
     .profile-card {
@@ -378,7 +598,7 @@
       border-radius: 16px;
       background: transparent;
       color: var(--muted);
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
       cursor: pointer;
     }
@@ -419,7 +639,7 @@
 
       <div class="hero">
         <div class="hero-title">Coin Tap</div>
-        <div class="hero-subtitle">Тапай по монете и прокачивай баланс</div>
+        <div class="hero-subtitle">Тапай по монете и увеличивай баланс</div>
       </div>
 
       <div class="stats">
@@ -428,16 +648,16 @@
           <div class="stat-value" id="balance">0</div>
         </div>
         <div class="stat glass">
-          <div class="stat-label">Энергия</div>
-          <div class="stat-value"><span id="energy">100</span>/100</div>
+          <div class="stat-label">Клик</div>
+          <div class="stat-value" id="tapPower">1x</div>
         </div>
       </div>
 
       <div class="coin-area" id="coinArea">
         <div class="coin-wrap">
-          <div class="coin-glow"></div>
+          <div class="coin-glow" id="coinGlow"></div>
           <div class="coin-ring"></div>
-          <button class="coin" id="coinBtn"></button>
+          <button class="coin standard" id="coinBtn"></button>
         </div>
       </div>
 
@@ -451,19 +671,96 @@
         </div>
       </div>
 
-      <div class="actions">
-        <button class="btn btn-primary" id="saveBtn">Сохранить локально</button>
-        <button class="btn btn-secondary" id="shareBtn">Показать мой профиль</button>
+      <div class="stats" style="margin-top: 0;">
+        <div class="stat glass">
+          <div class="stat-label">Энергия</div>
+          <div class="stat-value"><span id="energy">100</span>/100</div>
+        </div>
+        <div class="stat glass">
+          <div class="stat-label">Скин</div>
+          <div class="stat-value" id="skinLabel" style="font-size:18px;">Gold</div>
+        </div>
       </div>
 
       <div class="mini-hint">
-        Если игра открыта через Menu Button, данные не отправляются в бот через sendData.
+        Улучшения и скины покупаются за твой накликанный баланс.
+      </div>
+    </section>
+
+    <section class="screen" id="shopScreen">
+      <div class="page-title">Магазин</div>
+      <div class="page-subtitle">Покупай усиления и меняй внешний вид коина</div>
+
+      <div class="shop-list">
+        <div class="shop-card glass">
+          <div class="shop-head">
+            <div class="shop-title">Усиление x2</div>
+            <div class="shop-price">100</div>
+          </div>
+          <div class="tag" id="boost1Tag">+1 к клику</div>
+          <div class="shop-desc">
+            После покупки каждый тап будет давать не 1, а 2 монеты.
+          </div>
+          <button class="btn" id="buyBoost1Btn">Купить за 100</button>
+        </div>
+
+        <div class="shop-card glass">
+          <div class="shop-head">
+            <div class="shop-title">Усиление x3</div>
+            <div class="shop-price">1500</div>
+          </div>
+          <div class="tag" id="boost2Tag">ещё +1 к клику</div>
+          <div class="shop-desc">
+            Вторая покупка добавляет ещё 1 клик. После неё каждый тап даёт 3 монеты.
+          </div>
+          <button class="btn" id="buyBoost2Btn">Купить за 1500</button>
+        </div>
+      </div>
+
+      <div style="height:16px;"></div>
+
+      <div class="page-title" style="font-size:24px;">Скины</div>
+      <div class="page-subtitle" style="margin-bottom:14px;">Выбери стиль своей монеты</div>
+
+      <div class="skin-preview-list">
+        <div class="skin-card glass">
+          <div class="skin-preview-row">
+            <div class="mini-coin standard"></div>
+            <div>
+              <div class="skin-name">Gold C</div>
+              <div class="skin-sub">Стандартный скин</div>
+            </div>
+          </div>
+          <button class="btn" id="equipStandardBtn">Выбрать</button>
+        </div>
+
+        <div class="skin-card glass">
+          <div class="skin-preview-row">
+            <div class="mini-coin cap"></div>
+            <div>
+              <div class="skin-name">Bottle Cap C</div>
+              <div class="skin-sub">Красно-сине-белая крышка</div>
+            </div>
+          </div>
+          <button class="btn" id="equipCapBtn">Выбрать</button>
+        </div>
+
+        <div class="skin-card glass">
+          <div class="skin-preview-row">
+            <div class="mini-coin crypto"></div>
+            <div>
+              <div class="skin-name">Crypto C</div>
+              <div class="skin-sub">Крипто-монета с буквой C</div>
+            </div>
+          </div>
+          <button class="btn" id="equipCryptoBtn">Выбрать</button>
+        </div>
       </div>
     </section>
 
     <section class="screen" id="profileScreen">
-      <div class="profile-title">Профиль</div>
-      <div class="profile-subtitle">Данные автоматически подтягиваются из Telegram</div>
+      <div class="page-title">Профиль</div>
+      <div class="page-subtitle">Данные автоматически подтягиваются из Telegram</div>
 
       <div class="profile-card glass">
         <div class="profile-row">
@@ -483,25 +780,19 @@
           <div class="profile-value" id="profileBalance">0</div>
         </div>
         <div class="profile-row">
-          <div class="profile-label">Энергия</div>
-          <div class="profile-value" id="profileEnergy">100</div>
-        </div>
-      </div>
-
-      <div class="profile-card glass">
-        <div class="profile-row">
-          <div class="profile-label">Статус</div>
-          <div class="profile-value">Привязан к Telegram</div>
+          <div class="profile-label">Сила клика</div>
+          <div class="profile-value" id="profileTapPower">1x</div>
         </div>
         <div class="profile-row">
-          <div class="profile-label">Хранение</div>
-          <div class="profile-value">Локально на устройстве</div>
+          <div class="profile-label">Скин</div>
+          <div class="profile-value" id="profileSkin">Gold C</div>
         </div>
       </div>
     </section>
 
     <div class="bottom-nav">
       <button class="nav-btn active" id="gameTab">🎮 Игра</button>
+      <button class="nav-btn" id="shopTab">🛒 Магазин</button>
       <button class="nav-btn" id="profileTab">👤 Профиль</button>
     </div>
   </div>
@@ -528,14 +819,32 @@
     let energy = Number(localStorage.getItem('coin_energy')) || 100;
     const maxEnergy = 100;
 
+    let boost1Bought = localStorage.getItem('boost1_bought') === 'true';
+    let boost2Bought = localStorage.getItem('boost2_bought') === 'true';
+    let currentSkin = localStorage.getItem('coin_skin') || 'standard';
+
+    const tapPower = () => {
+      let power = 1;
+      if (boost1Bought) power += 1;
+      if (boost2Bought) power += 1;
+      return power;
+    };
+
+    const skinNames = {
+      standard: 'Gold C',
+      cap: 'Bottle Cap C',
+      crypto: 'Crypto C'
+    };
+
     const balanceEl = document.getElementById('balance');
+    const tapPowerEl = document.getElementById('tapPower');
     const energyEl = document.getElementById('energy');
     const energyTextEl = document.getElementById('energyText');
     const barFill = document.getElementById('barFill');
     const coinBtn = document.getElementById('coinBtn');
+    const coinGlow = document.getElementById('coinGlow');
     const coinArea = document.getElementById('coinArea');
-    const saveBtn = document.getElementById('saveBtn');
-    const shareBtn = document.getElementById('shareBtn');
+    const skinLabel = document.getElementById('skinLabel');
 
     const topName = document.getElementById('topName');
     const topUsername = document.getElementById('topUsername');
@@ -545,11 +854,24 @@
     const profileUsername = document.getElementById('profileUsername');
     const profileId = document.getElementById('profileId');
     const profileBalance = document.getElementById('profileBalance');
-    const profileEnergy = document.getElementById('profileEnergy');
+    const profileTapPower = document.getElementById('profileTapPower');
+    const profileSkin = document.getElementById('profileSkin');
+
+    const boost1Tag = document.getElementById('boost1Tag');
+    const boost2Tag = document.getElementById('boost2Tag');
+    const buyBoost1Btn = document.getElementById('buyBoost1Btn');
+    const buyBoost2Btn = document.getElementById('buyBoost2Btn');
+
+    const equipStandardBtn = document.getElementById('equipStandardBtn');
+    const equipCapBtn = document.getElementById('equipCapBtn');
+    const equipCryptoBtn = document.getElementById('equipCryptoBtn');
 
     const gameScreen = document.getElementById('gameScreen');
+    const shopScreen = document.getElementById('shopScreen');
     const profileScreen = document.getElementById('profileScreen');
+
     const gameTab = document.getElementById('gameTab');
+    const shopTab = document.getElementById('shopTab');
     const profileTab = document.getElementById('profileTab');
 
     function applyUser() {
@@ -562,25 +884,102 @@
       profileId.textContent = currentUser.id;
     }
 
+    function saveState() {
+      localStorage.setItem('coin_balance', balance);
+      localStorage.setItem('coin_energy', energy);
+      localStorage.setItem('boost1_bought', boost1Bought);
+      localStorage.setItem('boost2_bought', boost2Bought);
+      localStorage.setItem('coin_skin', currentSkin);
+    }
+
+    function applySkin() {
+      coinBtn.className = `coin ${currentSkin}`;
+
+      if (currentSkin === 'standard') {
+        coinGlow.style.background = 'radial-gradient(circle, rgba(255, 184, 0, 0.35) 0%, rgba(255, 184, 0, 0.12) 40%, rgba(255, 184, 0, 0) 72%)';
+      } else if (currentSkin === 'cap') {
+        coinGlow.style.background = 'radial-gradient(circle, rgba(21, 101, 192, 0.30) 0%, rgba(229, 57, 53, 0.18) 38%, rgba(255,255,255,0) 72%)';
+      } else {
+        coinGlow.style.background = 'radial-gradient(circle, rgba(201, 141, 16, 0.35) 0%, rgba(201, 141, 16, 0.12) 40%, rgba(255, 184, 0, 0) 72%)';
+      }
+
+      skinLabel.textContent = skinNames[currentSkin];
+      profileSkin.textContent = skinNames[currentSkin];
+    }
+
+    function updateButtons() {
+      if (boost1Bought) {
+        boost1Tag.textContent = 'Куплено';
+        boost1Tag.classList.add('active');
+        buyBoost1Btn.textContent = 'Уже куплено';
+        buyBoost1Btn.className = 'btn btn-disabled';
+      } else if (balance >= 100) {
+        buyBoost1Btn.textContent = 'Купить за 100';
+        buyBoost1Btn.className = 'btn btn-green';
+      } else {
+        buyBoost1Btn.textContent = 'Недостаточно средств';
+        buyBoost1Btn.className = 'btn btn-disabled';
+      }
+
+      if (boost2Bought) {
+        boost2Tag.textContent = 'Куплено';
+        boost2Tag.classList.add('active');
+        buyBoost2Btn.textContent = 'Уже куплено';
+        buyBoost2Btn.className = 'btn btn-disabled';
+      } else if (!boost1Bought) {
+        buyBoost2Btn.textContent = 'Сначала купи x2';
+        buyBoost2Btn.className = 'btn btn-disabled';
+      } else if (balance >= 1500) {
+        buyBoost2Btn.textContent = 'Купить за 1500';
+        buyBoost2Btn.className = 'btn btn-green';
+      } else {
+        buyBoost2Btn.textContent = 'Недостаточно средств';
+        buyBoost2Btn.className = 'btn btn-disabled';
+      }
+
+      setSkinButtonState(equipStandardBtn, currentSkin === 'standard');
+      setSkinButtonState(equipCapBtn, currentSkin === 'cap');
+      setSkinButtonState(equipCryptoBtn, currentSkin === 'crypto');
+    }
+
+    function setSkinButtonState(button, active) {
+      if (active) {
+        button.textContent = 'Выбрано';
+        button.className = 'btn btn-disabled';
+      } else {
+        button.textContent = 'Выбрать';
+        button.className = 'btn btn-primary';
+      }
+    }
+
     function render() {
       balanceEl.textContent = balance;
       energyEl.textContent = energy;
       energyTextEl.textContent = `${energy}/${maxEnergy}`;
       barFill.style.width = `${(energy / maxEnergy) * 100}%`;
 
-      profileBalance.textContent = balance;
-      profileEnergy.textContent = energy;
+      tapPowerEl.textContent = tapPower() + 'x';
 
-      localStorage.setItem('coin_balance', balance);
-      localStorage.setItem('coin_energy', energy);
+      profileBalance.textContent = balance;
+      profileTapPower.textContent = tapPower() + 'x';
+
+      applySkin();
+      updateButtons();
+      saveState();
     }
 
     function switchTab(tab) {
-      const onGame = tab === 'game';
-      gameScreen.classList.toggle('active', onGame);
-      profileScreen.classList.toggle('active', !onGame);
-      gameTab.classList.toggle('active', onGame);
-      profileTab.classList.toggle('active', !onGame);
+      const isGame = tab === 'game';
+      const isShop = tab === 'shop';
+      const isProfile = tab === 'profile';
+
+      gameScreen.classList.toggle('active', isGame);
+      shopScreen.classList.toggle('active', isShop);
+      profileScreen.classList.toggle('active', isProfile);
+
+      gameTab.classList.toggle('active', isGame);
+      shopTab.classList.toggle('active', isShop);
+      profileTab.classList.toggle('active', isProfile);
     }
 
     function showTapText(x, y, text) {
@@ -593,33 +992,105 @@
       setTimeout(() => el.remove(), 750);
     }
 
+    function notify(title, message) {
+      try {
+        tg.showPopup({
+          title,
+          message,
+          buttons: [{ type: 'ok' }]
+        });
+      } catch (e) {
+        alert(title + '\\n\\n' + message);
+      }
+    }
+
+    function successHaptic() {
+      try { tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
+    }
+
+    function warnHaptic() {
+      try { tg.HapticFeedback.notificationOccurred('warning'); } catch (e) {}
+    }
+
+    function tapHaptic() {
+      try { tg.HapticFeedback.impactOccurred('light'); } catch (e) {}
+    }
+
     gameTab.addEventListener('click', () => switchTab('game'));
+    shopTab.addEventListener('click', () => switchTab('shop'));
     profileTab.addEventListener('click', () => switchTab('profile'));
 
     coinBtn.addEventListener('click', (e) => {
+      const power = tapPower();
+
       if (energy <= 0) {
-        try {
-          tg.HapticFeedback.notificationOccurred('warning');
-          tg.showPopup({
-            title: 'Энергия закончилась',
-            message: 'Подожди немного, пока она восстановится.',
-            buttons: [{ type: 'ok' }]
-          });
-        } catch (err) {}
+        warnHaptic();
+        notify('Энергия закончилась', 'Подожди немного, пока энергия восстановится.');
         return;
       }
 
-      balance += 1;
+      balance += power;
       energy -= 1;
-
-      try {
-        tg.HapticFeedback.impactOccurred('light');
-      } catch (err) {}
+      tapHaptic();
 
       const rect = coinArea.getBoundingClientRect();
-      const x = e.clientX - rect.left - 12;
+      const x = e.clientX - rect.left - 20;
       const y = e.clientY - rect.top - 18;
-      showTapText(x, y, '+1');
+      showTapText(x, y, `+${power}`);
+
+      render();
+    });
+
+    buyBoost1Btn.addEventListener('click', () => {
+      if (boost1Bought) return;
+      if (balance < 100) {
+        warnHaptic();
+        notify('Недостаточно средств', 'Для покупки усиления x2 нужно 100 монет.');
+        return;
+      }
+
+      balance -= 100;
+      boost1Bought = true;
+      successHaptic();
+      render();
+      notify('Покупка успешна', 'Теперь каждый тап даёт 2 монеты.');
+    });
+
+    buyBoost2Btn.addEventListener('click', () => {
+      if (boost2Bought) return;
+      if (!boost1Bought) {
+        warnHaptic();
+        notify('Сначала купи x2', 'Усиление x3 открывается только после x2.');
+        return;
+      }
+      if (balance < 1500) {
+        warnHaptic();
+        notify('Недостаточно средств', 'Для покупки усиления x3 нужно 1500 монет.');
+        return;
+      }
+
+      balance -= 1500;
+      boost2Bought = true;
+      successHaptic();
+      render();
+      notify('Покупка успешна', 'Теперь каждый тап даёт 3 монеты.');
+    });
+
+    equipStandardBtn.addEventListener('click', () => {
+      currentSkin = 'standard';
+      successHaptic();
+      render();
+    });
+
+    equipCapBtn.addEventListener('click', () => {
+      currentSkin = 'cap';
+      successHaptic();
+      render();
+    });
+
+    equipCryptoBtn.addEventListener('click', () => {
+      currentSkin = 'crypto';
+      successHaptic();
       render();
     });
 
@@ -629,27 +1100,6 @@
         render();
       }
     }, 1000);
-
-    saveBtn.addEventListener('click', () => {
-      render();
-      try {
-        tg.HapticFeedback.notificationOccurred('success');
-        tg.showPopup({
-          title: 'Готово',
-          message: 'Прогресс сохранён на этом устройстве.',
-          buttons: [{ type: 'ok' }]
-        });
-      } catch (err) {
-        alert('Прогресс сохранён на этом устройстве.');
-      }
-    });
-
-    shareBtn.addEventListener('click', () => {
-      switchTab('profile');
-      try {
-        tg.HapticFeedback.selectionChanged();
-      } catch (err) {}
-    });
 
     applyUser();
     render();
