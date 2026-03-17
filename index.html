@@ -797,312 +797,150 @@
     </div>
   </div>
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
+ <script>
+const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand();
 
-    try {
-      tg.setHeaderColor('#0b1222');
-      tg.setBackgroundColor('#070b14');
-    } catch (e) {}
+const tgUser = tg.initDataUnsafe?.user || null;
 
-    const tgUser = tg.initDataUnsafe?.user || null;
+const currentUser = {
+  id: tgUser?.id || 'Не определён',
+  first_name: tgUser?.first_name || 'Игрок',
+  username: tgUser?.username ? '@' + tgUser.username : '@unknown'
+};
 
-    const currentUser = {
-      id: tgUser?.id || 'Не определён',
-      first_name: tgUser?.first_name || 'Игрок',
-      username: tgUser?.username ? '@' + tgUser.username : '@unknown'
-    };
+let balance = Number(localStorage.getItem('coin_balance')) || 0;
+let energy = Number(localStorage.getItem('coin_energy')) || 100;
+let maxEnergy = Number(localStorage.getItem('max_energy')) || 100;
+let upgradeLevel = Number(localStorage.getItem('upgrade_level')) || 0;
+let tapBoost = Number(localStorage.getItem('tap_boost')) || 0;
+let lastTime = Number(localStorage.getItem('last_time')) || Date.now();
 
-    let balance = Number(localStorage.getItem('coin_balance')) || 0;
-    let energy = Number(localStorage.getItem('coin_energy')) || 100;
-    const maxEnergy = 100;
+let currentSkin = localStorage.getItem('coin_skin') || 'standard';
 
-    let boost1Bought = localStorage.getItem('boost1_bought') === 'true';
-    let boost2Bought = localStorage.getItem('boost2_bought') === 'true';
-    let currentSkin = localStorage.getItem('coin_skin') || 'standard';
+const balanceEl = document.getElementById('balance');
+const energyEl = document.getElementById('energy');
+const coinBtn = document.getElementById('coinBtn');
+const coinArea = document.getElementById('coinArea');
+const upgradeBtn = document.getElementById('upgradeBtn');
 
-    const tapPower = () => {
-      let power = 1;
-      if (boost1Bought) power += 1;
-      if (boost2Bought) power += 1;
-      return power;
-    };
+function getTapPower() {
+  return 1 + tapBoost;
+}
 
-    const skinNames = {
-      standard: 'Gold C',
-      cap: 'Bottle Cap C',
-      crypto: 'Crypto C'
-    };
+function getUpgradePrice() {
+  if (upgradeLevel < 10) {
+    return Math.floor(100 * Math.pow(1.7, upgradeLevel));
+  } else {
+    return Math.floor(2000 * Math.pow(2, upgradeLevel - 10));
+  }
+}
 
-    const balanceEl = document.getElementById('balance');
-    const tapPowerEl = document.getElementById('tapPower');
-    const energyEl = document.getElementById('energy');
-    const energyTextEl = document.getElementById('energyText');
-    const barFill = document.getElementById('barFill');
-    const coinBtn = document.getElementById('coinBtn');
-    const coinGlow = document.getElementById('coinGlow');
-    const coinArea = document.getElementById('coinArea');
-    const skinLabel = document.getElementById('skinLabel');
+function applyOfflineEnergy() {
+  const now = Date.now();
+  const diff = Math.floor((now - lastTime) / 1000);
 
-    const topName = document.getElementById('topName');
-    const topUsername = document.getElementById('topUsername');
-    const avatar = document.getElementById('avatar');
+  energy += diff;
+  if (energy > maxEnergy) energy = maxEnergy;
+}
 
-    const profileName = document.getElementById('profileName');
-    const profileUsername = document.getElementById('profileUsername');
-    const profileId = document.getElementById('profileId');
-    const profileBalance = document.getElementById('profileBalance');
-    const profileTapPower = document.getElementById('profileTapPower');
-    const profileSkin = document.getElementById('profileSkin');
+function saveState() {
+  localStorage.setItem('coin_balance', balance);
+  localStorage.setItem('coin_energy', energy);
+  localStorage.setItem('max_energy', maxEnergy);
+  localStorage.setItem('upgrade_level', upgradeLevel);
+  localStorage.setItem('tap_boost', tapBoost);
+  localStorage.setItem('coin_skin', currentSkin);
+  localStorage.setItem('last_time', Date.now());
+}
 
-    const boost1Tag = document.getElementById('boost1Tag');
-    const boost2Tag = document.getElementById('boost2Tag');
-    const buyBoost1Btn = document.getElementById('buyBoost1Btn');
-    const buyBoost2Btn = document.getElementById('buyBoost2Btn');
+function render() {
+  balanceEl.textContent = balance;
+  energyEl.textContent = energy;
 
-    const equipStandardBtn = document.getElementById('equipStandardBtn');
-    const equipCapBtn = document.getElementById('equipCapBtn');
-    const equipCryptoBtn = document.getElementById('equipCryptoBtn');
+  if (upgradeBtn) {
+    upgradeBtn.textContent = `Улучшить (${getUpgradePrice()})`;
+  }
+}
 
-    const gameScreen = document.getElementById('gameScreen');
-    const shopScreen = document.getElementById('shopScreen');
-    const profileScreen = document.getElementById('profileScreen');
+function showTap(x, y, value) {
+  const el = document.createElement('div');
+  el.className = 'tap-text';
+  el.textContent = `+${value}`;
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  coinArea.appendChild(el);
 
-    const gameTab = document.getElementById('gameTab');
-    const shopTab = document.getElementById('shopTab');
-    const profileTab = document.getElementById('profileTab');
+  setTimeout(() => el.remove(), 700);
+}
 
-    function applyUser() {
-      topName.textContent = currentUser.first_name;
-      topUsername.textContent = currentUser.username;
-      avatar.textContent = currentUser.first_name.charAt(0).toUpperCase();
+coinBtn.addEventListener('click', (e) => {
+  if (energy <= 0) return;
 
-      profileName.textContent = currentUser.first_name;
-      profileUsername.textContent = currentUser.username;
-      profileId.textContent = currentUser.id;
+  const power = getTapPower();
+
+  balance += power;
+  energy -= 1;
+
+  const rect = coinArea.getBoundingClientRect();
+  showTap(e.clientX - rect.left, e.clientY - rect.top, power);
+
+  render();
+});
+
+if (upgradeBtn) {
+  upgradeBtn.addEventListener('click', () => {
+    const price = getUpgradePrice();
+
+    if (balance < price) {
+      alert('Не хватает монет');
+      return;
     }
 
-    function saveState() {
-      localStorage.setItem('coin_balance', balance);
-      localStorage.setItem('coin_energy', energy);
-      localStorage.setItem('boost1_bought', boost1Bought);
-      localStorage.setItem('boost2_bought', boost2Bought);
-      localStorage.setItem('coin_skin', currentSkin);
+    balance -= price;
+    upgradeLevel++;
+
+    if (upgradeLevel <= 10) {
+      tapBoost += 1;
+      maxEnergy += 10;
+    } else {
+      tapBoost += 2;
+      maxEnergy += 15;
     }
 
-    function applySkin() {
-      coinBtn.className = `coin ${currentSkin}`;
-
-      if (currentSkin === 'standard') {
-        coinGlow.style.background = 'radial-gradient(circle, rgba(255, 184, 0, 0.35) 0%, rgba(255, 184, 0, 0.12) 40%, rgba(255, 184, 0, 0) 72%)';
-      } else if (currentSkin === 'cap') {
-        coinGlow.style.background = 'radial-gradient(circle, rgba(21, 101, 192, 0.30) 0%, rgba(229, 57, 53, 0.18) 38%, rgba(255,255,255,0) 72%)';
-      } else {
-        coinGlow.style.background = 'radial-gradient(circle, rgba(201, 141, 16, 0.35) 0%, rgba(201, 141, 16, 0.12) 40%, rgba(255, 184, 0, 0) 72%)';
-      }
-
-      skinLabel.textContent = skinNames[currentSkin];
-      profileSkin.textContent = skinNames[currentSkin];
-    }
-
-    function updateButtons() {
-      if (boost1Bought) {
-        boost1Tag.textContent = 'Куплено';
-        boost1Tag.classList.add('active');
-        buyBoost1Btn.textContent = 'Уже куплено';
-        buyBoost1Btn.className = 'btn btn-disabled';
-      } else if (balance >= 100) {
-        buyBoost1Btn.textContent = 'Купить за 100';
-        buyBoost1Btn.className = 'btn btn-green';
-      } else {
-        buyBoost1Btn.textContent = 'Недостаточно средств';
-        buyBoost1Btn.className = 'btn btn-disabled';
-      }
-
-      if (boost2Bought) {
-        boost2Tag.textContent = 'Куплено';
-        boost2Tag.classList.add('active');
-        buyBoost2Btn.textContent = 'Уже куплено';
-        buyBoost2Btn.className = 'btn btn-disabled';
-      } else if (!boost1Bought) {
-        buyBoost2Btn.textContent = 'Сначала купи x2';
-        buyBoost2Btn.className = 'btn btn-disabled';
-      } else if (balance >= 1500) {
-        buyBoost2Btn.textContent = 'Купить за 1500';
-        buyBoost2Btn.className = 'btn btn-green';
-      } else {
-        buyBoost2Btn.textContent = 'Недостаточно средств';
-        buyBoost2Btn.className = 'btn btn-disabled';
-      }
-
-      setSkinButtonState(equipStandardBtn, currentSkin === 'standard');
-      setSkinButtonState(equipCapBtn, currentSkin === 'cap');
-      setSkinButtonState(equipCryptoBtn, currentSkin === 'crypto');
-    }
-
-    function setSkinButtonState(button, active) {
-      if (active) {
-        button.textContent = 'Выбрано';
-        button.className = 'btn btn-disabled';
-      } else {
-        button.textContent = 'Выбрать';
-        button.className = 'btn btn-primary';
-      }
-    }
-
-    function render() {
-      balanceEl.textContent = balance;
-      energyEl.textContent = energy;
-      energyTextEl.textContent = `${energy}/${maxEnergy}`;
-      barFill.style.width = `${(energy / maxEnergy) * 100}%`;
-
-      tapPowerEl.textContent = tapPower() + 'x';
-
-      profileBalance.textContent = balance;
-      profileTapPower.textContent = tapPower() + 'x';
-
-      applySkin();
-      updateButtons();
-      saveState();
-    }
-
-    function switchTab(tab) {
-      const isGame = tab === 'game';
-      const isShop = tab === 'shop';
-      const isProfile = tab === 'profile';
-
-      gameScreen.classList.toggle('active', isGame);
-      shopScreen.classList.toggle('active', isShop);
-      profileScreen.classList.toggle('active', isProfile);
-
-      gameTab.classList.toggle('active', isGame);
-      shopTab.classList.toggle('active', isShop);
-      profileTab.classList.toggle('active', isProfile);
-    }
-
-    function showTapText(x, y, text) {
-      const el = document.createElement('div');
-      el.className = 'tap-text';
-      el.textContent = text;
-      el.style.left = `${x}px`;
-      el.style.top = `${y}px`;
-      coinArea.appendChild(el);
-      setTimeout(() => el.remove(), 750);
-    }
-
-    function notify(title, message) {
-      try {
-        tg.showPopup({
-          title,
-          message,
-          buttons: [{ type: 'ok' }]
-        });
-      } catch (e) {
-        alert(title + '\\n\\n' + message);
-      }
-    }
-
-    function successHaptic() {
-      try { tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
-    }
-
-    function warnHaptic() {
-      try { tg.HapticFeedback.notificationOccurred('warning'); } catch (e) {}
-    }
-
-    function tapHaptic() {
-      try { tg.HapticFeedback.impactOccurred('light'); } catch (e) {}
-    }
-
-    gameTab.addEventListener('click', () => switchTab('game'));
-    shopTab.addEventListener('click', () => switchTab('shop'));
-    profileTab.addEventListener('click', () => switchTab('profile'));
-
-    coinBtn.addEventListener('click', (e) => {
-      const power = tapPower();
-
-      if (energy <= 0) {
-        warnHaptic();
-        notify('Энергия закончилась', 'Подожди немного, пока энергия восстановится.');
-        return;
-      }
-
-      balance += power;
-      energy -= 1;
-      tapHaptic();
-
-      const rect = coinArea.getBoundingClientRect();
-      const x = e.clientX - rect.left - 20;
-      const y = e.clientY - rect.top - 18;
-      showTapText(x, y, `+${power}`);
-
-      render();
-    });
-
-    buyBoost1Btn.addEventListener('click', () => {
-      if (boost1Bought) return;
-      if (balance < 100) {
-        warnHaptic();
-        notify('Недостаточно средств', 'Для покупки усиления x2 нужно 100 монет.');
-        return;
-      }
-
-      balance -= 100;
-      boost1Bought = true;
-      successHaptic();
-      render();
-      notify('Покупка успешна', 'Теперь каждый тап даёт 2 монеты.');
-    });
-
-    buyBoost2Btn.addEventListener('click', () => {
-      if (boost2Bought) return;
-      if (!boost1Bought) {
-        warnHaptic();
-        notify('Сначала купи x2', 'Усиление x3 открывается только после x2.');
-        return;
-      }
-      if (balance < 1500) {
-        warnHaptic();
-        notify('Недостаточно средств', 'Для покупки усиления x3 нужно 1500 монет.');
-        return;
-      }
-
-      balance -= 1500;
-      boost2Bought = true;
-      successHaptic();
-      render();
-      notify('Покупка успешна', 'Теперь каждый тап даёт 3 монеты.');
-    });
-
-    equipStandardBtn.addEventListener('click', () => {
-      currentSkin = 'standard';
-      successHaptic();
-      render();
-    });
-
-    equipCapBtn.addEventListener('click', () => {
-      currentSkin = 'cap';
-      successHaptic();
-      render();
-    });
-
-    equipCryptoBtn.addEventListener('click', () => {
-      currentSkin = 'crypto';
-      successHaptic();
-      render();
-    });
-
-    setInterval(() => {
-      if (energy < maxEnergy) {
-        energy += 1;
-        render();
-      }
-    }, 1000);
-
-    applyUser();
     render();
-  </script>
+  });
+}
+
+function applySkin() {
+  coinBtn.className = 'coin ' + currentSkin;
+}
+
+document.getElementById('equipCapBtn')?.addEventListener('click', () => {
+  if (balance < 1500) return alert('Нужно 1500');
+  balance -= 1500;
+  currentSkin = 'cap';
+  render();
+});
+
+document.getElementById('equipCryptoBtn')?.addEventListener('click', () => {
+  if (balance < 1000) return alert('Нужно 1000');
+  balance -= 1000;
+  currentSkin = 'crypto';
+  render();
+});
+
+setInterval(() => {
+  if (energy < maxEnergy) {
+    energy += 1;
+    render();
+  }
+}, 1000);
+
+applyOfflineEnergy();
+applySkin();
+render();
+</script>
 </body>
 </html>
